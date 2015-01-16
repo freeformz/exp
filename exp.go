@@ -22,16 +22,10 @@ func main() {
 
 	fmt.Println("Listening on: " + listen)
 
-	if !debug {
-		go func() {
-			ticker := time.Tick(5 * time.Second)
-			for {
-				select {
-				case <-ticker:
-					fmt.Println("Drops: ", drops)
-				}
-			}
-		}()
+	if debug {
+		for _, e := range os.Environ() {
+			fmt.Println(e)
+		}
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -65,7 +59,6 @@ func main() {
 				}
 			}
 		}
-		w.WriteHeader(http.StatusOK)
 		if debug {
 			fmt.Println()
 		}
