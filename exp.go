@@ -33,6 +33,7 @@ func main() {
 			fmt.Println(time.Now())
 			fmt.Printf("%s %s %s\n", r.Method, r.URL, r.Proto)
 			fmt.Printf("Scheme: %s\n", r.URL.Scheme)
+			fmt.Printf("Host: %s\n", r.Host)
 			fmt.Println("Headers:")
 		}
 		rdrops := r.Header.Get("Logshuttle-Drops")
