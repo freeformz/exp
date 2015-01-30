@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+var version string
+
 func main() {
 	listen := os.Getenv("LISTEN")
 	debug := os.Getenv("DEBUG") != ""
@@ -23,6 +25,7 @@ func main() {
 	fmt.Println("Listening on: " + listen)
 
 	if debug {
+		fmt.Println("Version: ", version)
 		for _, e := range os.Environ() {
 			fmt.Println(e)
 		}
