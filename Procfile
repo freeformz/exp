@@ -1,1 +1,1 @@
-web: LISTEN=:$PORT exp
+web: LISTEN=:$PORT DEBUG=true exp
