@@ -1,1 +1,1 @@
-web: exp
+web: LISTEN=:$PORT exp
