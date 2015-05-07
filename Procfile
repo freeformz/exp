@@ -1,1 +1,1 @@
-web: LISTEN=:$PORT ./bin/exp
+web: exp
