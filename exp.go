@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"runtime"
 	"strconv"
 	"sync/atomic"
 	"time"
@@ -29,6 +30,7 @@ func main() {
 		for _, e := range os.Environ() {
 			fmt.Println(e)
 		}
+		fmt.Println("Go Version: ", runtime.Version())
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
