@@ -31,6 +31,7 @@ func main() {
 			fmt.Println(e)
 		}
 		fmt.Println("Go Version: ", runtime.Version())
+		fmt.Println("NumCPU: ", runtime.NumCPU())
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
