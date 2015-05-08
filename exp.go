@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"sync/atomic"
 	"time"
+
+	"github.com/freeformz/exp/Godeps/_workspace/src/github.com/heroku/slog"
 )
 
 var version string
@@ -26,12 +28,11 @@ func main() {
 	fmt.Println("Listening on: " + listen)
 
 	if debug {
-		fmt.Println("Version: ", version)
+		ctx := slog.Context{"version": version, "go-version": runtime.Version(), "numcpu": runtime.NumCPU()}
 		for _, e := range os.Environ() {
 			fmt.Println(e)
 		}
-		fmt.Println("Go Version: ", runtime.Version())
-		fmt.Println("NumCPU: ", runtime.NumCPU())
+		fmt.Println(ctx)
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
