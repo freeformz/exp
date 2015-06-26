@@ -57,17 +57,16 @@ func main() {
 			fmt.Printf("Content Length: %d\n", r.ContentLength)
 		}
 
-		if r.ContentLength > 0 {
-			body, err := ioutil.ReadAll(r.Body)
-			if err != nil {
-				fmt.Println("Error Reading Body:", err)
-			} else {
-				if debug {
-					fmt.Println("Body:")
-					fmt.Println(string(body))
-				}
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			fmt.Println("Error Reading Body:", err)
+		} else {
+			if debug {
+				fmt.Println("Body:")
+				fmt.Println(string(body))
 			}
 		}
+
 		if debug {
 			fmt.Println()
 		}
