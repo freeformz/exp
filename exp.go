@@ -10,7 +10,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/freeformz/exp/Godeps/_workspace/src/github.com/heroku/slog"
+	"github.com/heroku/slog"
 )
 
 var version string
