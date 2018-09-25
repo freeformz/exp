@@ -7,23 +7,34 @@ import (
 	"os"
 	"runtime"
 	"strconv"
+	"sync"
 	"sync/atomic"
 	"time"
 )
 
 var version string
 
+var mu sync.Mutex
+var n int
+
+func p(s string) {
+	mu.Lock()
+	defer mu.Unlock()
+	fmt.Printf("%d: %q\n", n, s)
+	n++
+}
+
 func debugForm(r *http.Request) {
 	if err := r.ParseForm(); err != nil {
-		fmt.Println("Error Parsing Form: ", err)
+		p("Error Parsing Form: " + err.Error())
 		return
 	}
-	fmt.Println("Form Values:")
+	p("Form Values:")
 	if len(r.Form) == 0 {
-		fmt.Printf("No Form Values")
+		p("\tNo Form Values")
 	}
 	for k := range r.Form {
-		fmt.Printf("\t%q: %q\n", k, r.FormValue(k))
+		p(fmt.Sprintf("\t%q: %q", k, r.FormValue(k)))
 	}
 }
 
@@ -37,13 +48,13 @@ func main() {
 		listen = ":8080"
 	}
 
-	fmt.Println("Listening on: " + listen)
+	p("Listening on: " + listen)
 
 	if debug {
 		for _, e := range os.Environ() {
-			fmt.Println(e)
+			p(e)
 		}
-		fmt.Printf("version=%q go-version=%q numcpu=%q\n", version, runtime.Version(), runtime.NumCPU())
+		p(fmt.Sprintf("version=%q go-version=%q numcpu=%q", version, runtime.Version(), runtime.NumCPU()))
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -55,28 +66,28 @@ func main() {
 
 		if debug {
 			defer func() {
-				fmt.Println("---")
+				p("---")
 			}()
-			fmt.Println(time.Now())
-			fmt.Printf("%s %s %s\n", r.Method, r.URL, r.Proto)
-			fmt.Printf("Scheme: %s\n", r.URL.Scheme)
-			fmt.Printf("Host: %s\n", r.Host)
-			fmt.Println("Headers:")
+			p(time.Now().String())
+			p(fmt.Sprintf("%s %s %s", r.Method, r.URL, r.Proto))
+			p(fmt.Sprintf("Scheme: %s", r.URL.Scheme))
+			p(fmt.Sprintf("Host: %s", r.Host))
+			p(fmt.Sprintf("Headers:"))
 			for k := range r.Header {
-				fmt.Printf("\t%s: %s\n", k, r.Header.Get(k))
+				p(fmt.Sprintf("\t%s: %s", k, r.Header.Get(k)))
 			}
 			debugForm(r)
-			fmt.Printf("Content Length: %d\n", r.ContentLength)
+			p(fmt.Sprintf("Content Length: %d\n", r.ContentLength))
 		}
 
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-			fmt.Println("Error Reading Body:", err)
+			p("Error Reading Body: " + err.Error())
 			return
 		}
 		if debug {
-			fmt.Println("Body:")
-			fmt.Println(string(body))
+			p("Body:")
+			p(string(body))
 		}
 	})
 
