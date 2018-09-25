@@ -9,8 +9,6 @@ import (
 	"strconv"
 	"sync/atomic"
 	"time"
-
-	"github.com/heroku/slog"
 )
 
 var version string
@@ -42,11 +40,10 @@ func main() {
 	fmt.Println("Listening on: " + listen)
 
 	if debug {
-		ctx := slog.Context{"version": version, "go-version": runtime.Version(), "numcpu": runtime.NumCPU()}
 		for _, e := range os.Environ() {
 			fmt.Println(e)
 		}
-		fmt.Println(ctx)
+		fmt.Printf("version=%q go-version=%q numcpu=%q\n", version, runtime.Version(), runtime.NumCPU())
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
