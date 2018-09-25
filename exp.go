@@ -19,9 +19,15 @@ var n int
 
 func p(s string) {
 	mu.Lock()
-	defer mu.Unlock()
+	defer func() {
+		n++
+		mu.Unlock()
+	}()
+	if s[0] == '\t' {
+		fmt.Printf("%d: \t%q\n", n, s[0:])
+		return
+	}
 	fmt.Printf("%d: %q\n", n, s)
-	n++
 }
 
 func debugForm(r *http.Request) {
