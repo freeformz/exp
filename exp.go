@@ -24,7 +24,7 @@ func p(s string) {
 		mu.Unlock()
 	}()
 	if s[0] == '\t' {
-		fmt.Printf("%d: \t%q\n", n, s[0:])
+		fmt.Printf("%d: \t%q\n", n, s[1:])
 		return
 	}
 	fmt.Printf("%d: %q\n", n, s)
@@ -60,7 +60,7 @@ func main() {
 		for _, e := range os.Environ() {
 			p(e)
 		}
-		p(fmt.Sprintf("version=%q go-version=%q numcpu=%q", version, runtime.Version(), runtime.NumCPU()))
+		p(fmt.Sprintf("version=%s go-version=%s numcpu=%d", version, runtime.Version(), runtime.NumCPU()))
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
