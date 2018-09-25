@@ -15,6 +15,20 @@ import (
 
 var version string
 
+func debugForm(r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		fmt.Println("Error Parsing Form: ", err)
+		return
+	}
+	fmt.Println("Form Values:")
+	if len(r.Form) == 0 {
+		fmt.Printf("No Form Values")
+	}
+	for k := range r.Form {
+		fmt.Printf("\t%q: %q\n", k, r.FormValue(k))
+	}
+}
+
 func main() {
 	listen := os.Getenv("LISTEN")
 	debug := os.Getenv("DEBUG") != ""
@@ -36,39 +50,36 @@ func main() {
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if debug {
-			fmt.Println(time.Now())
-			fmt.Printf("%s %s %s\n", r.Method, r.URL, r.Proto)
-			fmt.Printf("Scheme: %s\n", r.URL.Scheme)
-			fmt.Printf("Host: %s\n", r.Host)
-			fmt.Println("Headers:")
-		}
 		rdrops := r.Header.Get("Logshuttle-Drops")
 		d, err := strconv.Atoi(rdrops)
 		if err == nil {
 			atomic.AddUint64(&drops, uint64(d))
 		}
+
 		if debug {
-			for k, _ := range r.Header {
+			defer func() {
+				fmt.Println("---")
+			}()
+			fmt.Println(time.Now())
+			fmt.Printf("%s %s %s\n", r.Method, r.URL, r.Proto)
+			fmt.Printf("Scheme: %s\n", r.URL.Scheme)
+			fmt.Printf("Host: %s\n", r.Host)
+			fmt.Println("Headers:")
+			for k := range r.Header {
 				fmt.Printf("\t%s: %s\n", k, r.Header.Get(k))
 			}
-		}
-		if debug {
+			debugForm(r)
 			fmt.Printf("Content Length: %d\n", r.ContentLength)
 		}
 
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			fmt.Println("Error Reading Body:", err)
-		} else {
-			if debug {
-				fmt.Println("Body:")
-				fmt.Println(string(body))
-			}
+			return
 		}
-
 		if debug {
-			fmt.Println()
+			fmt.Println("Body:")
+			fmt.Println(string(body))
 		}
 	})
 
