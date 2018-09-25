@@ -40,7 +40,7 @@ func debugForm(r *http.Request) {
 		p("\tNo Form Values")
 	}
 	for k := range r.Form {
-		p(fmt.Sprintf("\t%q: %q", k, r.FormValue(k)))
+		p(fmt.Sprintf("\t%s: %s", k, r.FormValue(k)))
 	}
 }
 
